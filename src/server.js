@@ -2,9 +2,9 @@ import express from "express";
 import morgan from "morgan";
 import globalRouter from "./routers/globalRouter";
 import userRouter from "./routers/userRouter";
-import videoRouter from "./routers/userRouter";
+import videoRouter from "./routers/videoRouter";
 
-const PORT = 4002;
+const PORT = 4001;
 const app = express();
 app.use(morgan("dev")); // middleware 중 하나인 morgan
 
