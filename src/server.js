@@ -8,6 +8,8 @@ const PORT = 4001;
 const app = express();
 app.use(morgan("dev")); // middleware 중 하나인 morgan
 
+app.set("view engine", "pug"); // view engine을 pug로 set
+app.set("views", process.cwd() + "/src/views"); // 경로 수정
 app.use("/", globalRouter); // "/"경로에 접근시, globalRouter의 controller 찾게 함
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
