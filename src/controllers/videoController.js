@@ -10,10 +10,13 @@ export const home = async (req, res) => {
   }
 };
 
-export const watch = (req, res) => {
+export const watch = async (req, res) => {
   const { id } = req.params;
-  console.log("req.params: ", req.params);
-  return res.render("watch", { pageTitle: `Watching` });
+  const video = await Video.findById(id);
+  if (video) {
+    return res.render("watch", { pageTitle: video.title, video: video });
+  }
+  return res.render("404", { pageTitle: "Video not found." });
 };
 export const getEdit = (req, res) => {
   const { id } = req.params;
@@ -33,17 +36,20 @@ export const getUpload = (req, res) => {
 // video를 video array에 추가
 export const postUpload = async (req, res) => {
   const { title, description, hashtags } = req.body;
-  const video = new Video({
-    title,
-    description: description,
-    createdAt: Date.now(),
-    hashtags: hashtags ? hashtags.split(",").map((word) => `#${word}`) : [],
-    meta: {
-      views: 0,
-      rating: 0,
-    },
-  });
-  const dbVideo = await video.save();
-  console.log(dbVideo);
-  return res.redirect("/"); // 위의 trending을 호출하게 됨
+  try {
+    await Video.create({
+      title,
+      description: description,
+      createdAt: Date.now(),
+      hashtags: hashtags ? hashtags.split(",").map((word) => `#${word}`) : [],
+    });
+    // const dbVideo = await video.save();
+    // console.log(dbVideo);
+    return res.redirect("/"); // 위의 trending을 호출하게 됨
+  } catch (error) {
+    return res.render("upload", {
+      pageTitle: "Upload Video",
+      errorMessage: error._message,
+    });
+  }
 };
