@@ -2,7 +2,7 @@ import Video from "../models/Video";
 
 export const home = async (req, res) => {
   try {
-    const videos = await Video.find({}); // Mongoose의 Model.find()를 프로미스로 사용
+    const videos = await Video.find({}).sort({ createdAt: "desc" }); // Mongoose의 Model.find()를 프로미스로 사용
     return res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
     console.error(error);
@@ -75,4 +75,17 @@ export const deleteVideo = async (req, res) => {
   await Video.findByIdAndRemove(id);
 
   return res.redirect("/");
+};
+
+export const search = async (req, res) => {
+  const { keyword } = req.query;
+  let videos = [];
+  if (keyword) {
+    videos = await Video.find({
+      title: {
+        $regex: new RegExp(`${keyword}`, "i"),
+      },
+    });
+  }
+  return res.render("search", { pageTitle: "Search", videos });
 };
