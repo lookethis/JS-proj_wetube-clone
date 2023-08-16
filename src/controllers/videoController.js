@@ -14,7 +14,7 @@ export const watch = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
   if (!video) {
-    return res.render("404", { pageTitle: "Video not found." });
+    return res.status(404).render("404", { pageTitle: "Video not found." });
   }
   return res.render("watch", { pageTitle: video.title, video: video });
 };
@@ -35,7 +35,7 @@ export const postEdit = async (req, res) => {
   // video객체가 아닌 true or false만 받음
   const video = await Video.exists({ _id: id });
   if (!video) {
-    return res.render("404", { pageTitle: "Video not found." });
+    return res.status(404).render("404", { pageTitle: "Video not found." });
   }
 
   // mongoose에서 제공하는 property로 정보 바꾸기
@@ -63,7 +63,7 @@ export const postUpload = async (req, res) => {
     });
     return res.redirect("/"); // 위의 trending을 호출하게 됨
   } catch (error) {
-    return res.render("upload", {
+    return res.status(400).render("upload", {
       pageTitle: "Upload Video",
       errorMessage: error._message,
     });
